@@ -3,37 +3,48 @@ package part01.lesson04.task01;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * Класс объектоы
+ */
 public class ObjectBox {
 
-    HashSet<Object> hashSet;
+    protected HashSet<Object> hashSet;
 
+    /**
+     * Конструктор
+     */
     public ObjectBox() {
         hashSet = new HashSet<>();
     }
 
-    public HashSet<Object> addObject(Object o) {
+    /**
+     * Добавляет объект в коллекцию
+     *
+     * @param o
+     */
+    public void addObject(Object o) {
         hashSet.add(o);
-        return hashSet;
+
     }
 
-    public HashSet<Object> deleteObject(Object o) {
-        Iterator itr = hashSet.iterator();
+    /**
+     * Удаляет объект из коллекции
+     *
+     * @param o
+     */
+    public void deleteObject(Object o) {
+        hashSet.remove(o);
 
-        while (itr.hasNext()) {
-            if (itr.next().equals(o)) {
-                itr.remove();
-            }
-        }
-
-        return hashSet;
     }
 
-    static void dump(HashSet<Object> hs) {
-        for (Iterator<?> i = hs.iterator(); i.hasNext(); ) {
+    /**
+     * Выводит на экран список элементов коллекции
+     */
+    public void dump() {
+        for (Iterator<?> i = hashSet.iterator(); i.hasNext(); ) {
             Object o = i.next();
-            System.out.println(o);
+            System.out.print(o + " ");
         }
+        System.out.println();
     }
-
-
 }

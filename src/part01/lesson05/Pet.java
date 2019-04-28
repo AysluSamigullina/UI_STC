@@ -1,17 +1,37 @@
 package part01.lesson05;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collections;
-
+/**
+ * Животное
+ */
 public class Pet {
-
+    /**
+     * Уникальный идентификатор
+     */
     private int id;
+
+    /**
+     * Кличка
+     */
     private String petname;
+
+    /**
+     * Хозяин
+     */
     private Person person;
+
+    /**
+     * Вес
+     */
     private int weight;
 
+    /**
+     * Коснтруктор
+     *
+     * @param id
+     * @param petname
+     * @param person
+     * @param weight
+     */
     public Pet(int id, String petname, Person person, int weight) {
         this.id = id;
         this.petname = petname;
@@ -19,58 +39,44 @@ public class Pet {
         this.weight = weight;
     }
 
-    public Pet() {
-//        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-//        while (!bufferedReader.readLine().equals("exit")) {
-//
-//            System.out.println("Введите id животного ");
-//            String s = bufferedReader.readLine();
-//            int id1 = Integer.parseInt(s);
-//            setId(id1);
-//            System.out.println("Введите кличку животного ");
-//            setPetname(bufferedReader.readLine());
-//            setPerson(new Person("test", 11, true));
-//            System.out.println("Введите вес животного ");
-//            int weight1 = Integer.parseInt(bufferedReader.readLine());
-//            setWeight(weight1);
-//        }
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setPetname(String petname) {
-        this.petname = petname;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
+    /**
+     * Получает уникальный идентификатор
+     *
+     * @return
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Получает кличку
+     *
+     * @return
+     */
     public String getPetname() {
         return petname;
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
+    /**
+     * Полуачает вес
+     *
+     * @return
+     */
     public int getWeight() {
         return weight;
     }
 
+    @Override
+    public String toString() {
+        return petname + " " + id + " (" + person.getName() + " " + person.getAge() + " " + person.isSex() +") " + weight;
+    }
 
-//    public Pet searchByPetName(String name) {
-//
-//        return Pet;
-//    }
+    /**
+     * Получает имя хозяина
+     *
+     * @return
+     */
+    public String getPersonName() {
+        return person.getName();
+    }
 }

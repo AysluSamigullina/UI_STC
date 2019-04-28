@@ -16,7 +16,7 @@ public class Main {
         Object obj = null;
 
         try {
-            if (obj.equals(s) == false) {
+            if (!obj.equals(s)) {
                 System.err.println("This may result in NullPointerException if unknownObject is null");
             }
         } catch (NullPointerException e) {
@@ -27,7 +27,7 @@ public class Main {
             System.out.println(s);
         }
 
-        if (s.equals(obj) == false) {
+        if (!s.equals(obj)) {
             System.out.println("А обратный вариант возможен");
         }
 

@@ -1,5 +1,8 @@
 package part01.lesson05;
 
+/**
+ * Оформление класса Person, хозяев
+ */
 public class Person {
 
     private String name;
@@ -7,14 +10,20 @@ public class Person {
     private boolean sex;
 
     public Person(String name, int age, boolean sex) {
-      this.name = name;
-      this.age  = age;
-      this.sex  = sex;
+        this.name = name;
+        this.age  = age;
+        this.sex  = sex;
     }
 
-    public Person() {
-
+    public String getName() {
+        return name;
     }
 
+    public int getAge() {
+        return age;
+    }
 
+    public boolean isSex() {
+        return sex;
+    }
 }
