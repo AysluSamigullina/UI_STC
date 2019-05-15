@@ -7,23 +7,34 @@ import java.util.Objects;
 import java.util.Random;
 import java.io.*;
 
+/**
+ * Основной класс
+ */
 public class Main {
 
+    /**
+     * Основной метод
+     * @param args
+     * @throws FileNotFoundException
+     */
     public static void main(String[] args) throws FileNotFoundException {
-
-        //Words words = new Words();
-//        System.out.println("это случайное слово " + Words.randomWord());
-//        System.out.println("это случайная фраза " + Words.randomPhrase());
-//        System.out.println("Это случайный абзац " + Words.createIndent() );
-//        System.out.println("Это случайный текст " + Words.createText());
 
         String[] library = Words.createWordsArray();
 
-        getFiles("/Users/timur/projects/UI_STC/lesson06-2/", 5, 10, library, 10);
+        getFiles("/Users/timur/projects/UI_STC/lesson06-2/", 5, 1024, library, 10);
         // /Users/timur/projects/UI_STC/
 
     }
 
+    /**
+     * Метод создает в определенном каталоге файлы переданного размера и записывает в них массив чисел
+     * @param path
+     * @param n
+     * @param size
+     * @param words
+     * @param probability
+     * @throws FileNotFoundException
+     */
     static void getFiles(String path, int n, int size, String[] words, int probability) throws FileNotFoundException {
 
        Random random = new Random();
@@ -43,23 +54,28 @@ public class Main {
 
         System.out.println(newText);
 
-        String[] names = new String[n];
+        //String[] names = new String[n];
         for (int i = 0; i < n; i++) {
-            names[i] = "tmp" + i;
-            File newFile = new File(path, names[i]);
-        try {
-            newFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+            String s = "tmp" + i;
+            s = s+".txt";
+            File newFile = new File(path, s);
+            if (newFile.canWrite()) {
+                FileOutputStream fos = new FileOutputStream(newFile, false);
+                byte[] buffer = newText.getBytes();
+
+                try {
+
+                    fos.write(buffer, 0, size);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                newFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        }
-
-//
-
-
-//        for (String str1: file.list()) {
-//            System.out.println(str1);
-//        }
-
     }
 }
