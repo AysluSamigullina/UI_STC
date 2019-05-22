@@ -45,7 +45,7 @@ public class Person implements Comparable<Person> {
     }
 
     public Person(int age, sexType sex, String name) {
-        this.setAge(age);
+        this.age = age;
         this.sex  = sex;
         this.name = name;
     }
@@ -57,7 +57,7 @@ public class Person implements Comparable<Person> {
     public void setAge(int age) {
         if ((age < 100) & (age > 0)) {
             this.age = age;
-        }
+        } else this.age = 0;
     }
 
     public sexType getSex() {
