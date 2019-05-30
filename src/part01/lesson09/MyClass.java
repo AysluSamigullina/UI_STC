@@ -1,12 +1,20 @@
 package part01.lesson09;
 
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MyClass extends ClassLoader {
 
-    final private String PATH = "SomeClass.java";
+    //final private String PATH = "resources/SomeClass.java";
+    final private String PATH = "part01/lesson09/SomeClass.class";
+    public static StringBuilder text;
 
     /**
      * Считывает с консоли текст
@@ -33,6 +41,13 @@ public class MyClass extends ClassLoader {
         return text.toString();
     }
 
+//    public static Path write(String fileName, String content) throws IOException {
+//        String tmpProperty = System.getProperty("java.io.tmpdir");
+//        Path sourcePath = Paths.get(tmpProperty, "Harmless.java");
+//        Files.write(sourcePath, content.getBytes());
+//        return sourcePath;
+//    }
+
     /**
      * Записывает в файл
      *
@@ -50,6 +65,27 @@ public class MyClass extends ClassLoader {
         }
     }
 
+    public static Path compileSource(Path javaFile) {
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        compiler.run(null, null, null, javaFile.toFile().getAbsolutePath());
+        return javaFile.getParent().resolve("Harmless.class");
+    }
+
+    public static void runClass(Path javaClass)
+            throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        URL classUrl = javaClass.getParent().toFile().toURI().toURL();
+        URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{classUrl});
+        Class<?> clazz = Class.forName("Harmless", true, classLoader);
+        clazz.newInstance();
+    }
+
+    /**
+     * Загружает класс по имени
+     *
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         if (PATH.equals(name)) {
@@ -58,6 +94,12 @@ public class MyClass extends ClassLoader {
         return super.loadClass(name); // механизм загрузки
     }
 
+    /**
+     * Находит класс по имени
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         System.out.println("findClass starts work: " + name);
