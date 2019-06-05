@@ -22,39 +22,63 @@ import java.util.Locale;
     б)   Выполнить 2-3 SQL операции на ваше усмотрение (например, Insert в 3 таблицы – USER, ROLE, USER_ROLE) между sql операциями установить точку сохранения (SAVEPOINT A), намеренно ввести некорректные данные на последней операции, что бы транзакция откатилась к логической точке SAVEPOINT A
  */
 
+/**
+ * Основной класс
+ */
 public class Main {
+    /**
+     * Основной метод
+     *
+     * @param args
+     * @throws SQLException
+     * @throws ParseException
+     */
     public static void main(String[] args) throws SQLException, ParseException {
-        DataBaseHelper dbh = new DataBaseHelper();
-        ArrayList<User> users = createPersons();
+        /**
+         * Параметризованный SQL-запрос для добавления новой строки в таблицу Users
+         */
         final String SQL_INSERT =
                 "INSERT INTO users (name, birthday, login_id, city, email, description)" +
                         "VALUES (?,?,?,?,?,?)";
+        /**
+         * Параметризованный SQL-запрос для выборки полей из таблицы Users
+         */
         final String SQL_SELECT = "SELECT * FROM users WHERE login_id = ? AND name = ?";
+        /**
+         * Параметризованный SQL-запрос для добавления новой строки в таблицу Roles
+         */
         final String SQL_INSERT_ROLES = "INSERT INTO roles (name, description) VALUES (?::role_names,?)";
+        /**
+         * Параметризованный SQL-запрос для добавления новой строки в таблицу user_role
+         */
         final String SQL_INSERT_USERROLE = "INSERT INTO user_role (user_id, role_id) VALUES (?,?)";
+
+        ArrayList<User> users = createPersons();
+        DataBaseHelper dbh = new DataBaseHelper();
         // параметризованный запрос
-//        dbh.insertUserWithParametres(SQL_INSERT,users);
-//        // batch запрос
-//        dbh.insertUsersWithBatches(SQL_INSERT, users);
-
-        //Сделать параметризированную выборку по login_ID и name одновременно
-        //       dbh.select(SQL_SELECT);
-
-        //Перевести connection в ручное управление транзакциями
+        dbh.insertUserWithParametres(SQL_INSERT, users);
+        // batch запрос
+        dbh.insertUsersWithBatches(SQL_INSERT, users);
+        dbh.select(SQL_SELECT);
         dbh.manualTransaktions();
         System.out.println("Creating savepoint...");
-        Savepoint first = dbh.getConnect().setSavepoint("insertingRoleSavePoint");
+        Savepoint point = null;
         try {
             dbh.insertRoles(SQL_INSERT_ROLES);
+            point = dbh.getConnect().setSavepoint("point1");
             dbh.insertUserRole(SQL_INSERT_USERROLE);
             dbh.getConnect().commit();
         } catch (SQLException e) {
             System.out.println("SQLException. Executing rollback to savepoint...");
-            dbh.getConnect().rollback(first);
+            dbh.getConnect().rollback(point);
         }
         dbh.close();
     }
 
+    /**
+     * Метод для создания списка пользователей
+     * @return
+     */
     public static ArrayList<User> createPersons() {
         ArrayList<User> arrUsers = new ArrayList<>();
         arrUsers.add(new User(
@@ -67,5 +91,4 @@ public class Main {
 
         return arrUsers;
     }
-
 }

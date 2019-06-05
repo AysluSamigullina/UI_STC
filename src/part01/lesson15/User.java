@@ -2,6 +2,9 @@ package part01.lesson15;
 
 import java.time.LocalDate;
 
+/**
+ * Класс User для оформления таблицы users
+ */
 public class User {
 
     private int id;

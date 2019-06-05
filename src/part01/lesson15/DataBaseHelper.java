@@ -3,27 +3,48 @@ package part01.lesson15;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Класс для работы с БД
+ */
 public class DataBaseHelper {
 
     private Connection connect;
     private PreparedStatement psInsert;
     private PreparedStatement psSelect;
 
+    /**
+     * Перечисление значений поля name из таблицы roles
+     */
     public enum Role {
         Administration,
         Clients,
         Billing;
     }
 
+    /**
+     * Конструктор
+     *
+     * @throws SQLException
+     */
     public DataBaseHelper() throws SQLException {
         connect = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test",
                 "postgres", "12345");
     }
 
+    /**
+     * Метод геттер для получения Connection
+     * @return
+     */
     public Connection getConnect() {
         return connect;
     }
 
+    /**
+     * Добавляет строку в таблицу users БД, используя параметризованный запрос
+     * @param sql
+     * @param users
+     * @throws SQLException
+     */
     public void insertUserWithParametres(String sql, ArrayList<User> users) throws SQLException {
         try {
             psInsert = connect.prepareStatement(sql);
@@ -41,24 +62,13 @@ public class DataBaseHelper {
         }
     }
 
-    public void insertRoles(String sql) {
-        try {
-            psInsert = connect.prepareStatement(sql);
-            psInsert.setString(1, Role.Administration.toString());
-            psInsert.setString(2, "zzz");
-            psInsert.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertUserRole(String sql) throws SQLException {
-        psInsert = connect.prepareStatement(sql);
-        psInsert.setInt(1, 18);
-        psInsert.setInt(2, 6);
-        psInsert.executeUpdate();
-    }
-
+    /**
+     * Добавляет строку в таблицу users БД, используя параметризованный batch запрос
+     *
+     * @param sql
+     * @param users
+     * @throws SQLException
+     */
     public void insertUsersWithBatches(String sql, ArrayList<User> users) throws SQLException {
         psInsert = connect.prepareStatement(sql);
         final int batchSize = 1000;
@@ -75,9 +85,41 @@ public class DataBaseHelper {
                 psInsert.executeBatch();
             }
         }
-        psInsert.executeBatch(); // insert remaining records
+        psInsert.executeBatch();
     }
 
+    /**
+     * Добавляет строку в таблицу roles БД, используя параметризованный запрос
+     * @param sql
+     */
+    public void insertRoles(String sql) {
+        try {
+            psInsert = connect.prepareStatement(sql);
+            psInsert.setString(1, Role.Billing.toString());
+            psInsert.setString(2, "iiii");
+            psInsert.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Добавляет строку в таблицу user_role БД, используя параметризованный запрос
+     * @param sql
+     * @throws SQLException
+     */
+    public void insertUserRole(String sql) throws SQLException {
+        psInsert = connect.prepareStatement(sql);
+        psInsert.setInt(1, 18);
+        psInsert.setString(3, "9");  // умышленно допущена ошибка для срабатывания savepoint
+        psInsert.executeUpdate();
+    }
+
+    /**
+     * Выбирает строки из таблицы users, используя параметризованный запрос
+     * @param sql
+     * @throws SQLException
+     */
     public void select(String sql) throws SQLException {
         try {
             psSelect = connect.prepareStatement(sql);
@@ -99,13 +141,19 @@ public class DataBaseHelper {
         }
     }
 
+    /**
+     * Переводит управление на ручное управление транзакциями
+     * @throws SQLException
+     */
     public void manualTransaktions() throws SQLException {
         connect.setAutoCommit(false);
     }
 
+    /**
+     * Закрывает соединение с базой
+     * @throws SQLException
+     */
     public void close() throws SQLException {
-//        psInsert.close();
         connect.close();
     }
-
 }
