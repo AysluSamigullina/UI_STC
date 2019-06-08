@@ -25,3 +25,12 @@ CREATE TABLE user_role
     role_id INTEGER REFERENCES roles (id),
     PRIMARY KEY (id, user_id, role_id)
 );
+
+CREATE TABLE logs
+(
+    id        SERIAL,
+    date      TIMESTAMPTZ,
+    log_level VARCHAR(10)  NOT NULL,
+    message   VARCHAR(255) NOT NULL,
+    exception VARCHAR(255)
+)
