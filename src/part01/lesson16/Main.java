@@ -56,19 +56,15 @@ public class Main {
         final String SQL_INSERT_USERROLE = "INSERT INTO user_role (user_id, role_id) VALUES (?,?)";
 
         ArrayList<User> users = createPersons();
-        logger.info("qwe");
         DataBaseHelper dbh = new DataBaseHelper();
-        logger.info("работа с БД");
+        dbh.connect();
         // параметризованный запрос
         dbh.insertUserWithParametres(SQL_INSERT, users);
         // batch запрос
         dbh.insertUsersWithBatches(SQL_INSERT, users);
-        for (User u : dbh.select(SQL_SELECT)) {
-            System.out.println(u);
-        }
-        logger.info("перевод на ручное управление");
+        dbh.select(SQL_SELECT);
         dbh.manualTransaktions();
-        logger.info("работа с savepoint");
+        System.out.println("Creating savepoint...");
         Savepoint point = null;
         try {
             dbh.insertRoles(SQL_INSERT_ROLES);
@@ -76,10 +72,13 @@ public class Main {
             dbh.insertUserRole(SQL_INSERT_USERROLE);
             dbh.getConnect().commit();
         } catch (SQLException e) {
-            logger.error("ошибка записи!", e);
-            dbh.getConnect().rollback(point);
+            System.out.println("SQLException. Executing rollback to savepoint...");
+            try {
+                dbh.getConnect().rollback(point);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
-        logger.info("закрытие связи с БД");
         dbh.close();
     }
 
