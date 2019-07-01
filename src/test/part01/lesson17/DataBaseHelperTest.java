@@ -1,5 +1,6 @@
 package part01.lesson17;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.*;
 
 import java.sql.*;
@@ -22,12 +23,14 @@ class DataBaseHelperTest {
         dataBaseHelper.connect();
         connection = dataBaseHelper.getConnect();
         createTables();
+        System.out.println("---------1-------");
 
     }
 
     @Test
     void testConnection() {
         assertNotNull(connection);
+        System.out.println("-----------2------");
     }
 
     @Test
@@ -55,6 +58,7 @@ class DataBaseHelperTest {
             e.printStackTrace();
         }
         assertEquals(s1, s2);
+        System.out.println("-------3--------");
     }
 
     @Test
@@ -82,6 +86,7 @@ class DataBaseHelperTest {
             e.printStackTrace();
         }
         assertEquals(s1, s2);
+        System.out.println("----------4--------");
     }
 
     @Test
@@ -103,11 +108,13 @@ class DataBaseHelperTest {
         }
         assertEquals("Billing", s1);
         assertEquals("iiii", s2);
+        System.out.println("--------5-------");
     }
 
     @Test
     void insertUserRole() {
         assertThrows(SQLException.class, () -> dataBaseHelper.insertUserRole("INSERT INTO user_role (user_id, role_id) VALUES (?,?)"));
+        System.out.println("--------6------");
     }
 
     @Test
@@ -123,26 +130,27 @@ class DataBaseHelperTest {
             e.printStackTrace();
         }
         assertEquals(1, quantity);
+        System.out.println("---------7-------");
     }
 
-    @Test
-    void manualTransaktions() {
+    @Ignore
+    void manualTransactions() {
         boolean flag = true;
-        dataBaseHelper.manualTransaktions();
+        dataBaseHelper.manualTransactions();
         try {
             flag = connection.getAutoCommit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         assertFalse(flag);
+        System.out.println("---------8--------");
     }
 
     @AfterAll
     static void dropTables() {
-        Statement statement;
+        Statement statement = null;
         try {
             statement = connection.createStatement();
-
             statement.executeUpdate("DROP TABLE user_role");
             statement.executeUpdate("DROP TABLE roles");
             statement.executeUpdate("DROP TYPE role_names");
@@ -150,6 +158,7 @@ class DataBaseHelperTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println("--------9--------");
     }
 
     private static void createTables() {
