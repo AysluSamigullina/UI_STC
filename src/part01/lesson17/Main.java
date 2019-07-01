@@ -58,7 +58,7 @@ public class Main {
         // batch запрос
         dbh.insertUsersWithBatches(SQL_INSERT, users);
         dbh.select(SQL_SELECT);
-        dbh.manualTransaktions();
+        dbh.manualTransactions();
         System.out.println("Creating savepoint...");
         Savepoint point = null;
         try {

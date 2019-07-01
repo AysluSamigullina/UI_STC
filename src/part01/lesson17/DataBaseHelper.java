@@ -193,7 +193,7 @@ public class DataBaseHelper {
      *
      * @throws SQLException
      */
-    public void manualTransaktions() {
+    public void manualTransactions() {
         try {
             connect.setAutoCommit(false);
         } catch (SQLException e) {
