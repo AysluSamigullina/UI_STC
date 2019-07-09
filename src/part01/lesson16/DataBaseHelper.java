@@ -1,5 +1,8 @@
 package part01.lesson16;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
@@ -15,8 +18,10 @@ public class DataBaseHelper {
     private PreparedStatement psInsert;
     private PreparedStatement psSelect;
     private static final String PATH_TO_PROPERTIES = "resources/lesson17/conf.properties";
-//    private final String USERNAME = "postgres";
-//    private final String PASSWORD = "12345";
+    /**
+     * Логгер
+     */
+    private static Logger logger = LogManager.getLogger(Main.class);
 
     /**
      * Перечисление значений поля name из таблицы roles
@@ -25,16 +30,6 @@ public class DataBaseHelper {
         Administration,
         Clients,
         Billing;
-    }
-
-    /**
-     * Конструктор
-     *
-     * @throws SQLException
-     */
-    public DataBaseHelper() {
-//        connect = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test",
-//                USERNAME, PASSWORD);
     }
 
     public void connect() {
@@ -50,11 +45,14 @@ public class DataBaseHelper {
             String password = prop.getProperty("password");
 
             connect = DriverManager.getConnection(url, login, password);
+            logger.info("Установка соединенния с БД");
         } catch (IOException e) {
             System.out.println("Ошибка в программе: файл " + PATH_TO_PROPERTIES + " не обнаружен");
+            logger.error("Файл для записи не обнаружен", e);
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Не установлено соединение с БД", e);
         } finally {
             try {
                 fileInputStream.close();
@@ -89,9 +87,11 @@ public class DataBaseHelper {
                 psInsert.setString(5, u.getEmail());
                 psInsert.setString(6, u.getDescription());
                 psInsert.executeUpdate();
+                logger.info("Добавлена строка в Users");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошибка добавления строки в Users");
         }
     }
 
@@ -121,8 +121,10 @@ public class DataBaseHelper {
                 }
             }
             psInsert.executeBatch();
+            logger.info("Добавление строки в Users с batch запросом");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошибка добавления строки с batch запросом");
         }
     }
 
@@ -136,8 +138,10 @@ public class DataBaseHelper {
             psInsert.setString(1, Role.Billing.toString());
             psInsert.setString(2, "iiii");
             psInsert.executeUpdate();
+            logger.info("Добавление строки в таблицу roles БД");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошибка добавления строку в таблицу roles БД");
         }
     }
 
@@ -146,11 +150,17 @@ public class DataBaseHelper {
      * @param sql
      * @throws SQLException
      */
-    public void insertUserRole(String sql) throws SQLException {
-        psInsert = connect.prepareStatement(sql);
-        psInsert.setInt(1, 18);
-        psInsert.setString(3, "9");  // умышленно допущена ошибка для срабатывания savepoint
-        psInsert.executeUpdate();
+    public void insertUserRole(String sql) {
+        try {
+            psInsert = connect.prepareStatement(sql);
+            psInsert.setInt(1, 18);
+            psInsert.setString(3, "9");  // умышленно допущена ошибка для срабатывания savepoint
+            psInsert.executeUpdate();
+            logger.info("Добавление строки в таблицу user_role");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error("Ошибка добавления строки в таблицу user_role");
+        }
     }
 
     /**
@@ -174,8 +184,10 @@ public class DataBaseHelper {
                 String description_ = rs.getString(7);
                 System.out.println(id_ + " " + name_ + " " + birthday_ + " " + loginID_ + " " + city_ + " " + email_ + " " + description_);
             }
+            logger.info("Выбор строк из таблицы Users");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошибка выбора строк из таблицы Users");
         }
 
     }
@@ -187,8 +199,10 @@ public class DataBaseHelper {
     public void manualTransaktions() {
         try {
             connect.setAutoCommit(false);
+            logger.info("Перевод на ручное управление транзакциями");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошиька перевода на ручное управление");
         }
     }
 
@@ -199,8 +213,10 @@ public class DataBaseHelper {
     public void close() {
         try {
             connect.close();
+            logger.info("Закрытие соединения с БД");
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Ошибка закрытия соединения");
         }
     }
 }

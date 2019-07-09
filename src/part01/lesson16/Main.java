@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,10 +23,6 @@ import java.util.Locale;
  * Основной класс
  */
 public class Main {
-    /**
-     * Логгер
-     */
-    private static Logger logger = LogManager.getLogger(Main.class);
 
     /**
      * Основной метод
