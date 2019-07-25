@@ -1,12 +1,11 @@
 package com.inno.bank.controller;
 
-import com.inno.bank.model.CreditCard;
-import com.inno.bank.model.DebitCard;
-import com.inno.bank.service.CreditCardService;
-import com.inno.bank.service.DebitCardService;
+import com.inno.bank.model.Account;
+import com.inno.bank.model.TransferMoney;
+import com.inno.bank.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -16,22 +15,29 @@ import java.util.List;
 @RestController
 public class PaymentController {
 
-    private final CreditCardService creditCardService;
-    private final DebitCardService debitCardService;
+    private final AccountService accountService;
 
     @Autowired
-    public PaymentController(CreditCardService creditCardService, DebitCardService debitCardService) {
-        this.creditCardService = creditCardService;
-        this.debitCardService = debitCardService;
+    public PaymentController(AccountService accountService) {
+           this.accountService = accountService;
     }
 
-    @GetMapping("/credit/card/all")
-    public List<CreditCard> getCreditCardInfoAll() {
-        return creditCardService.getCreditCardInfoAll();
+    @GetMapping("accounts/all")
+    public List<Account> getAccountInfoAll() {
+        return accountService.getAccountInfoAll();
     }
 
-    @GetMapping("/debit/card/all")
-    public List<DebitCard> getDebitCardInfoAll() {
-        return debitCardService.getDebitCardInfoAll();
+    //@GetMapping("accounts/add")
+    @PutMapping("accounts/add/{user_id}")
+    public void addAccount(@PathVariable int user_id) {
+        accountService.createAccount(user_id);
+        getAccountInfoAll();
     }
+
+    @PostMapping("/accounts/refill") // пополнение счета
+    public void refill(@RequestBody TransferMoney newTM) {
+        accountService.refillAccount(newTM);
+    }
+
+
 }
