@@ -6,6 +6,7 @@ import com.inno.bank.repository.db.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
@@ -44,15 +45,16 @@ public class AccountService {
 
     public void refillAccount(TransferMoney transferMoney) {   // пополнение или списание
         Account account = findAccountByScore(transferMoney.getAccountScore());
-        float oldsum = account.getAmount();
-        float newsum;
+        double oldsum = account.getAmount();
+        double newsum = 0.0d;
         if (transferMoney.isTypeOfOperation() == true) {
             newsum = oldsum + transferMoney.getSum();
         }
         else {
             newsum = oldsum - transferMoney.getSum();
         }
-        accountRepository.refillAccount(transferMoney.getAccountScore(), newsum);
+
+        accountRepository.refillAccount(transferMoney.getAccountScore(), newsum);  //double roundOff = Math.round(a * 100.0) / 100.0;
     }
 
     private Account findAccountByScore(String scoreId) {

@@ -28,7 +28,7 @@ public class PaymentController {
     }
 
     //@GetMapping("accounts/add")
-    @PutMapping("accounts/add/{user_id}")
+    @PutMapping("accounts/add/{user_id}")     //accounts/ user_id
     public void addAccount(@PathVariable int user_id) {
         accountService.createAccount(user_id);
         getAccountInfoAll();

@@ -57,11 +57,11 @@ public class AccountRepository {
     public Account findAccountByScore(String score) {   // надо найти строку и замапить в объект
         log.info("look for account by score");
         String sql = "SELECT * FROM accounts where score_id = " + "'" + score + "'";
-        Account acc = jdbcTemplate.queryForObject(sql, Account.class, score);
-        return acc;
+        List<Account> list = jdbcTemplate.query(sql, ROW_MAPPER);
+        return list.get(0);
     }
 
-    public void refillAccount(String score, float sum) {
+    public void refillAccount(String score, double sum) {
         String SQL = "UPDATE accounts SET amount = ? WHERE score_id = ?";
         jdbcTemplate.update(SQL, sum, score);
     }

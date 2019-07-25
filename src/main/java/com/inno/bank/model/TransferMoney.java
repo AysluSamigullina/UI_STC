@@ -3,7 +3,7 @@ package com.inno.bank.model;
 public class TransferMoney {
 
     private String accountScore;
-    private float sum;
+    private double sum;
     private boolean typeOfOperation;
 
     public String getAccountScore() {
@@ -14,11 +14,11 @@ public class TransferMoney {
         this.accountScore = accountScore;
     }
 
-    public float getSum() {
+    public double getSum() {
         return sum;
     }
 
-    public void setSum(float sum) {
+    public void setSum(double sum) {
         this.sum = sum;
     }
 
