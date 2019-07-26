@@ -7,7 +7,6 @@ create table if not exists accounts
 
 );
 
-
 insert INTO  accounts values ('00001', '1111', '1000', '0' );
 
 create table if not exists logs
@@ -21,4 +20,4 @@ create table if not exists logs
     exception text
 );
 
-drop table accounts;
+-- drop table accounts;
