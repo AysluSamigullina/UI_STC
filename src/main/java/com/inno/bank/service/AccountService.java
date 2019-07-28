@@ -5,14 +5,8 @@ import com.inno.bank.model.TransferMoney;
 import com.inno.bank.repository.db.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Random;
 
-/**
- * Created by Pavel Borodin on 2019-07-17
- */
 @Service
 public class AccountService {
 
@@ -23,8 +17,8 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public List<Account> getAccountInfoAll() {
-        return accountRepository.getAccountInfoAll();
+    public List<Account> getUserAccounts(int userID) {
+        return accountRepository.getUserAccounts(userID);
     }
 
     public void createAccount(int userID) {
@@ -32,12 +26,19 @@ public class AccountService {
         accountRepository.addAccount(score, userID);
     }
 
-    public static void closeAccount(int scoreId, int userID) {
-        // сначала надо найти счет
-        // проверить на нулевой баланс
-        // закрыть счет
+    public boolean closeAccount(String scoreId) {
+        // проверить баланс
+        if (accountRepository.getBalance(scoreId) == 0) {
+            accountRepository.closeAccount(scoreId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    public int checkBalance(String scoreId) {
+        return accountRepository.getBalance(scoreId);
+    }
     public static void listOfOperations (int scoreId, int userID) {
         // сначала найдо найти счет из таблицы accounts
         // выбрать из таблицы Operations операции
@@ -62,12 +63,12 @@ public class AccountService {
         return accountRepository.findAccountByScore(scoreId);
     }
 
-    private void findAccountByUserId(int userID) {
-
-    }
-
     private String generateScore() {
         String score = "" + 4081781 + System.currentTimeMillis();
         return score;
+    }
+
+    public void deleteAccount(String score) {
+        accountRepository.deleteAccount(score);
     }
 }

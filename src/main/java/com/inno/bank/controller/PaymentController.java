@@ -22,21 +22,39 @@ public class PaymentController {
            this.accountService = accountService;
     }
 
-    @GetMapping("accounts/all")
-    public List<Account> getAccountInfoAll() {
-        return accountService.getAccountInfoAll();
+    @GetMapping("accounts/{user}/all")
+    public List<Account> getUserAccounts(@PathVariable int user) {
+        return accountService.getUserAccounts(user);
     }
 
-    //@GetMapping("accounts/add")
-    @PutMapping("accounts/add/{user_id}")     //accounts/ user_id
-    public void addAccount(@PathVariable int user_id) {
-        accountService.createAccount(user_id);
-        getAccountInfoAll();
+    @PostMapping("/accounts/{user}/add")     //accounts/ user_id
+    public void createAccount(@PathVariable int user) {
+        accountService.createAccount(user);
+
     }
 
-    @PostMapping("/accounts/refill") // пополнение счета
+    @PutMapping("/refill") // пополнение счета
     public void refill(@RequestBody TransferMoney newTM) {
         accountService.refillAccount(newTM);
+    }
+
+    @DeleteMapping("/accounts/{score}/delete")
+    public void deleteAccount(@PathVariable String score) {
+        accountService.deleteAccount(score);
+    }
+
+    @PutMapping("/accounts/{score}/close")
+    public boolean closeAccount(@PathVariable String score) {
+        if (accountService.closeAccount(score)) {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    @GetMapping("/accounts/{score}/checkBalance")
+    public int checkBalance(@PathVariable String score) {
+         return accountService.checkBalance(score);
     }
 
 

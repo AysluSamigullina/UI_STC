@@ -1,6 +1,5 @@
 package com.inno.bank.model;
 
-import javax.persistence.*;
 import java.util.Date;
 
 
@@ -9,34 +8,37 @@ public class Account {
     private int id;
     private String scoreId;
     private int userID;
-    private float amount;
-    private float holded;
-    private Date OpeningDate;
-    private Date closingDate;
+    private int amount;
+    private int holded;
+    private Date createdAt;
+    private Date closedAt;
 
-    public Date getOpeningDate() {
-        return OpeningDate;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setOpeningDate(Date openingDate) {
-        OpeningDate = openingDate;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Date getClosingDate() {
-        return closingDate;
+    public Date getClosedAt() {
+        return closedAt;
     }
 
-    public void setClosingDate(Date closingDate) {
-        this.closingDate = closingDate;
+    public void setClosedAt(Date closedAt) {
+        this.closedAt = closedAt;
     }
 
-    public Account() {}
+    public Account() {
+    }
 
-    public Account(String scoreId, int userID, float amount, float holded) {
+    public Account(String scoreId, int userID, int amount, int holded, java.sql.Date openingDate, java.sql.Date closingDate) {
         this.scoreId = scoreId;
         this.userID = userID;
         this.amount = amount;
         this.holded = holded;
+        this.createdAt = openingDate;
+        this.closedAt = closingDate;
     }
 
     public int getId() {
@@ -59,19 +61,19 @@ public class Account {
         return userID;
     }
 
-    public float getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public float getHolded() {
+    public int getHolded() {
         return holded;
     }
 
-    public void setHolded(float holded) {
+    public void setHolded(int holded) {
         this.holded = holded;
     }
 }
