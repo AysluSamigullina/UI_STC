@@ -13,12 +13,12 @@ import java.util.List;
  * Created by Pavel Borodin on 2019-07-17
  */
 @RestController
-public class PaymentController {
+public class AccountController {
 
     private final AccountService accountService;
 
     @Autowired
-    public PaymentController(AccountService accountService) {
+    public AccountController(AccountService accountService) {
            this.accountService = accountService;
     }
 
