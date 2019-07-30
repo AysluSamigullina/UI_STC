@@ -3,7 +3,9 @@ create table if not exists accounts
     score_id varchar(20) NOT NULL,
 	user_id bigint not null ,
 	amount float,
-	holded float
+	holded float,
+	open date not null,
+	close date
 
 );
 
@@ -21,3 +23,13 @@ create table if not exists logs
 );
 
 -- drop table accounts;
+
+create table if not exists journal
+    (
+        id serial not null ,
+        date date not null ,
+        score_id varchar(20) not null ,
+        user_id    bigint not null ,
+        type varchar(20),
+        summa bigint
+);
