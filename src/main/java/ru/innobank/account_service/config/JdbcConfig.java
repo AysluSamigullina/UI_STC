@@ -1,4 +1,4 @@
-package com.inno.bank.config;
+package ru.innobank.account_service.config;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.context.annotation.Bean;

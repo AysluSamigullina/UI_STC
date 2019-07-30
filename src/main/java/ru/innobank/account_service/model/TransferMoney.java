@@ -1,9 +1,9 @@
-package com.inno.bank.model;
+package ru.innobank.account_service.model;
 
 public class TransferMoney {
 
     private String accountScore;
-    private double sum;
+    private int sum;
     private boolean typeOfOperation;
 
     public String getAccountScore() {
@@ -14,11 +14,11 @@ public class TransferMoney {
         this.accountScore = accountScore;
     }
 
-    public double getSum() {
+    public int getSum() {
         return sum;
     }
 
-    public void setSum(double sum) {
+    public void setSum(int sum) {
         this.sum = sum;
     }
 

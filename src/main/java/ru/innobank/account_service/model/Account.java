@@ -1,4 +1,4 @@
-package com.inno.bank.model;
+package ru.innobank.account_service.model;
 
 import java.util.Date;
 

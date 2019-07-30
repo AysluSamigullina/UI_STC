@@ -1,4 +1,4 @@
-package com.inno.bank.config;
+package ru.innobank.account_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,7 @@ public class DocumentationConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.inno.bank"))
+                .apis(RequestHandlerSelectors.basePackage("ru.innobank.account_service"))
                 .build();
     }
 }
