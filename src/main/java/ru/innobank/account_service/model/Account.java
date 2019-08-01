@@ -6,7 +6,7 @@ import java.util.Date;
 public class Account {
 
     private int id;
-    private String scoreId;
+    private String accNumber;
     private int userID;
     private int amount;
     private int holded;
@@ -32,8 +32,8 @@ public class Account {
     public Account() {
     }
 
-    public Account(String scoreId, int userID, int amount, int holded, java.sql.Date openingDate, java.sql.Date closingDate) {
-        this.scoreId = scoreId;
+    public Account(String accNumber, int userID, int amount, int holded, java.sql.Date openingDate, java.sql.Date closingDate) {
+        this.accNumber = accNumber;
         this.userID = userID;
         this.amount = amount;
         this.holded = holded;
@@ -45,12 +45,12 @@ public class Account {
         return id;
     }
 
-    public String getScoreId() {
-        return scoreId;
+    public String getAccNumber() {
+        return accNumber;
     }
 
-    public void setScoreId(String scoreId) {
-        this.scoreId = scoreId;
+    public void setAccNumber(String accNumber) {
+        this.accNumber = accNumber;
     }
 
     public void setUserID(int userID) {

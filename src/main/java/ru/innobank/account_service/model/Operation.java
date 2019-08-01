@@ -8,6 +8,7 @@ public class Operation {
     private int iserID;
     private String description;
     private int sum;
+    private int holding_id;
 
     public Operation(Date date, String score, int iserID, String description, int sum) {
         this.date = date;
@@ -15,6 +16,23 @@ public class Operation {
         this.iserID = iserID;
         this.description = description;
         this.sum = sum;
+    }
+
+    public int getHolding_id() {
+        return holding_id;
+    }
+
+    public void setHolding_id(int holding_id) {
+        this.holding_id = holding_id;
+    }
+
+    public Operation(Date date, String score, int iserID, String description, int sum, int holding_id) {
+        this.date = date;
+        this.score = score;
+        this.iserID = iserID;
+        this.description = description;
+        this.sum = sum;
+        this.holding_id = holding_id;
     }
 
     public Date getDate() {

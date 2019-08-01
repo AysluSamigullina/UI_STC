@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
 
 import java.util.Date;
@@ -48,8 +49,9 @@ public class AccountRepository {
             resultSet.getDate("date"),
             resultSet.getString("score_id"),
             resultSet.getInt("user_id"),
-            resultSet.getString("type"),
-            resultSet.getInt("summa")
+            resultSet.getString("description"),
+            resultSet.getInt("summa"),
+            resultSet.getInt("holding_id")
     );
 
     public List<Account> getUserAccounts(int user_id) {
@@ -62,7 +64,7 @@ public class AccountRepository {
     public void addAccount(String score, int user_id) {
         log.info("create account");
         jdbcTemplate.update("INSERT into accounts (score_id, user_id, amount, holded, open) values (?, ?, ?, ?, ?)", score, user_id, 0, 0, dataTime );
-        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, type) VALUES (?, ?, ?, ?)", dataTime, score, user_id, "Открытие счета");
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description) VALUES (?, ?, ?, ?)", dataTime, score, user_id, "Открытие счета");
     }
 
     public Account findAccountByScore(String score) {
@@ -73,28 +75,23 @@ public class AccountRepository {
     }
 
     public void refillAccount(String score, int sum) {
-        String SQL = "UPDATE accounts SET amount = ? WHERE score_id = ?";
-        jdbcTemplate.update(SQL, sum, score);
+        jdbcTemplate.update("UPDATE accounts SET amount = ? WHERE score_id = ?", sum, score);
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa) VALUES (?, ?, ?, ?, ?)", dataTime, score, findAccountByScore(score).getUserID(), "Пополнение счета", sum);
     }
 
-    public void writeRefill(String score, int user_id, int sum) {
-        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, type, summa) VALUES (?, ?, ?, ?, ?)", dataTime, score, user_id, "Пополнение счета", sum);
-    }
-
-    public void writewithdraw(String score, int user_id, int sum) {
-        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, type, summa) VALUES (?, ?, ?, ?, ?)", dataTime, score, user_id, "Списание со счета", sum);
-    }
-
-    public void deleteAccount(String score) {
-        log.info("deleting account");
-        String sql = "DELETE FROM accounts WHERE score_id = "+ "'" + score + "'";
-        jdbcTemplate.update(sql);
+    public void withdrawForHolding(String score, int user_id, int newsum, int firstsum) {
+        jdbcTemplate.update("UPDATE accounts SET amount = ? WHERE score_id = ?", newsum, score);
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa) VALUES (?, ?, ?, ?, ?)", dataTime, score, user_id, "Списание в счет блокировки", firstsum);
     }
 
     public int getBalance(String score) {
         Account account = findAccountByScore(score);
-        return account.getAmount() - account.getHolded();
+        return account.getAmount(); // - account.getHolded();
+    }
 
+    public int getHoldedBalance(String score) {
+        Account account = findAccountByScore(score);
+        return account.getHolded();
     }
 
     public void closeAccount(String score) {
@@ -102,7 +99,7 @@ public class AccountRepository {
         java.util.Date d = new java.util.Date();
         Date dataTime = new java.sql.Date(d.getTime());
         jdbcTemplate.update("UPDATE accounts SET close = ? WHERE score_id = ?", dataTime, score );
-        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, type) VALUES (?, ?, ?, ?)", dataTime, score, findAccountByScore(score).getUserID(), "Закрытие счета");
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description) VALUES (?, ?, ?, ?)", dataTime, score, findAccountByScore(score).getUserID(), "Закрытие счета");
     }
 
     public List<Operation> listOfOperations(String score) {
@@ -111,7 +108,55 @@ public class AccountRepository {
         return jdbcTemplate.query(sql, RW_journal);
     }
 
-    public void holdMoney(String score, int sum) {
+    /**
+     * Переводит сумму с поля amount в поле holded
+     * @param holding
+     */
+    public void refillToHolded(String score, int newsum, int firstsum, int id) {
+        log.info("холдирование");
+        jdbcTemplate.update("UPDATE accounts SET holded = ? WHERE score_id = ?", newsum, score);
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa, holding_id) VALUES (?, ?, ?, ?, ?, ?)", dataTime, score, findAccountByScore(score).getUserID(), "Блокировка суммы", firstsum, id);
+    }
+
+    /**
+     * Уменьшает общую заблокированную сумму на сумму успешной транзакции
+     * @param id
+     */
+    public void withdrawHolded(int id) {
+        log.info("списание заблокированной суммы");
+        String sql = "SELECT * FROM journal WHERE holding_id =" + "'" + id + "'";
+        Operation operation = jdbcTemplate.query(sql, RW_journal).get(0);
+        int holdedSum = jdbcTemplate.query(sql, RW_journal).get(0).getSum(); //нашла сумму холда по id
+        // уменьшить общую сумму холда
+        //найти первоначальную сумму и уменьшить на holdedSum
+        int first = getHoldedBalance(operation.getScore());
+        int second = first - holdedSum;
+        jdbcTemplate.update("UPDATE accounts SET holded = ? WHERE score_id = ?", second, operation.getScore());
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa) VALUES (?, ?, ?, ?, ?)", dataTime, operation.getScore(), findAccountByScore(operation.getScore()).getUserID(), "Списание заблокированной суммы", holdedSum);
 
     }
+
+    /**
+     * Возвращает заблокированную сумму на основной счет при неудачной транзакции
+     */
+    public void returnHolded(int id) {
+        log.info("возврат заблокированной суммы");
+        String sql = "SELECT * FROM journal WHERE holding_id =" + "'" + id + "'";
+        Operation operation = jdbcTemplate.query(sql, RW_journal).get(0);
+        int holdedSum = operation.getSum(); //нашла сумму холда по id
+        // уменьшить общую сумму холда
+        //найти первоначальную сумму и уменьшить на holdedSum
+        int firstHolded = getHoldedBalance(operation.getScore());
+        int secondHolded = firstHolded - holdedSum;
+
+        jdbcTemplate.update("UPDATE accounts SET holded = ? WHERE score_id = ?", secondHolded, operation.getScore());
+        jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa, holding_id) VALUES (?, ?, ?, ?, ?, ?)", dataTime, operation.getScore(), findAccountByScore(operation.getScore()).getUserID(), "Возврат заблокированной суммы", holdedSum, id);
+
+        int firstAmount = getBalance(operation.getScore());
+        int secondAmount = firstAmount + holdedSum;
+        jdbcTemplate.update("UPDATE accounts SET amount = ? WHERE score_id = ?", secondAmount, operation.getScore());
+        //jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa) VALUES (?, ?, ?, ?, ?)", dataTime, operation.getScore(), findAccountByScore(operation.getScore()).getUserID(), "Возврат заблокрованной суммы", holdedSum);
+
+    }
+
 }

@@ -30,6 +30,8 @@ create table if not exists journal
         date date not null ,
         score_id varchar(20) not null ,
         user_id    bigint not null ,
-        type varchar(20),
-        summa bigint
+        description varchar(100),
+        summa bigint,
+        holding_id int
 );
+

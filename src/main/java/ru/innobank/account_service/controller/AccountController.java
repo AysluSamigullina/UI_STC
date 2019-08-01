@@ -1,6 +1,7 @@
 package ru.innobank.account_service.controller;
 
 import ru.innobank.account_service.model.Account;
+import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
 import ru.innobank.account_service.model.TransferMoney;
 import ru.innobank.account_service.service.AccountService;
@@ -39,60 +40,69 @@ public class AccountController {
     }
 
     /**
-     * Пополняет или списывает со счета
+     * Пополняет счет
      * @param newTM
      */
-    @PutMapping("/refill")
+    @PutMapping("/accounts/{accountNumber}/refill")
     public void refill(@RequestBody TransferMoney newTM) {
         accountService.refillAccount(newTM);
     }
 
-    /**
-     * Удаляет счет
-     * @param score
-     */
-    @DeleteMapping("/accounts/{score}/delete")
-    public void deleteAccount(@PathVariable String score) {
-        accountService.deleteAccount(score);
-    }
-
-    /**
+     /**
      * Закрывает счет
-     * @param score
+     * @param accountNumber
      * @return
      */
-    @PutMapping("/accounts/{score}/close")
-    public boolean closeAccount(@PathVariable String score) {
-        if (accountService.closeAccount(score)) {
-            return true;
-        } else
-            return false;
+    @PutMapping("/accounts/{accountNumber}/close")
+    public void closeAccount(@PathVariable String accountNumber) {
+        accountService.closeAccount(accountNumber);
     }
 
     /**
      * Возвращает баланс
-     * @param score
+     * @param accountNumber
      * @return
      */
-    @GetMapping("/accounts/{score}/checkBalance")
-    public int checkBalance(@PathVariable String score) {
-        return accountService.checkBalance(score);
+    @GetMapping("/accounts/{accountNumber}/checkBalance")
+    public int checkBalance(@PathVariable String accountNumber) {
+        return accountService.checkBalance(accountNumber);
     }
 
     /**
      *  Возвращает список проведенных операций
-      * @param score
+      * @param accountNumber
      * @return
      */
-    @GetMapping("/accounts/{score}/operations")
-    public List<Operation> getOperations(@PathVariable String score) {
-        return accountService.listOfOperations(score);
+    @GetMapping("/accounts/{accountNumber}/operations")
+    public List<Operation> getOperations(@PathVariable String accountNumber) {
+        return accountService.listOfOperations(accountNumber);
     }
 
-    @PutMapping("/accounts/{score}/hold")
-    public void holdMoney(@RequestBody TransferMoney transferMoney) {
-        accountService.holdMoney(transferMoney);
+    /**
+     * Блокирует сумму на счете
+     * @param holding
+     */
+    @PutMapping("/accounts/{accountNumber}/hold")
+    public void hold(@RequestBody Holding holding) {
+        accountService.holdMoney(holding);
     }
 
+    /**
+     * Списывает заблокированную сумму при успешной транзакции
+     * @param id
+     */
+    @PutMapping("/accounts/withdrawholded/{id}")
+    public void unhold(@PathVariable int id) {
+        accountService.withdrawHolded(id);
+    }
+
+    /**
+     * Возвращает заблокированную сумму на счет при неуспешной транзакции
+     * @param holding_id
+     */
+    @PutMapping("/accounts/returnholded/{holding_id}")
+    public void returnHolded(@PathVariable int holding_id) {
+        accountService.returnHolded(holding_id);
+    }
 
 }
