@@ -32,6 +32,6 @@ create table if not exists journal
         user_id    bigint not null ,
         description varchar(100),
         summa bigint,
-        holding_id int
+        holding_id text
 );
 

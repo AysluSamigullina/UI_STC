@@ -82,7 +82,7 @@ public class AccountController {
      * Блокирует сумму на счете
      * @param holding
      */
-    @PutMapping("/accounts/{accountNumber}/hold")
+    @PutMapping("/accounts/hold")
     public void hold(@RequestBody Holding holding) {
         accountService.holdMoney(holding);
     }

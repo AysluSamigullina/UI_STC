@@ -112,7 +112,8 @@ public class AccountRepository {
      * Переводит сумму с поля amount в поле holded
      * @param holding
      */
-    public void refillToHolded(String score, int newsum, int firstsum, int id) {
+    public void refillToHolded(String score, int newsum, int firstsum, String id) {
+//        todo id поправить на transactionId и поправить конекты к базе на новые
         log.info("холдирование");
         jdbcTemplate.update("UPDATE accounts SET holded = ? WHERE score_id = ?", newsum, score);
         jdbcTemplate.update("INSERT into journal (date, score_id, user_id, description, summa, holding_id) VALUES (?, ?, ?, ?, ?, ?)", dataTime, score, findAccountByScore(score).getUserID(), "Блокировка суммы", firstsum, id);
