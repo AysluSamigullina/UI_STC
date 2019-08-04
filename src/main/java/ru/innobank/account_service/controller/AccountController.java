@@ -1,5 +1,7 @@
 package ru.innobank.account_service.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ru.innobank.account_service.model.Account;
 import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
@@ -35,15 +37,18 @@ public class AccountController {
      * @param user
      */
     @PostMapping("/accounts/{user}/add")
-    public void createAccount(@PathVariable int user) {
+    public ResponseEntity createAccount(@PathVariable long user) {
         accountService.createAccount(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+
     }
 
     /**
      * Пополняет счет
      * @param newTM
      */
-    @PutMapping("/accounts/{accountNumber}/refill")
+    @PutMapping("/accounts/refill")
     public void refill(@RequestBody TransferMoney newTM) {
         accountService.refillAccount(newTM);
     }
@@ -55,7 +60,8 @@ public class AccountController {
      */
     @PutMapping("/accounts/{accountNumber}/close")
     public void closeAccount(@PathVariable String accountNumber) {
-        accountService.closeAccount(accountNumber);
+       accountService.closeAccount(accountNumber);
+
     }
 
     /**
@@ -89,20 +95,20 @@ public class AccountController {
 
     /**
      * Списывает заблокированную сумму при успешной транзакции
-     * @param id
+     * @param transactionId
      */
-    @PutMapping("/accounts/withdrawholded/{id}")
-    public void unhold(@PathVariable int id) {
-        accountService.withdrawHolded(id);
+    @PutMapping("/accounts/withdrawholded/{transactionId}")
+    public void unhold(@PathVariable String transactionId) {
+        accountService.withdrawHolded(transactionId);
     }
 
     /**
      * Возвращает заблокированную сумму на счет при неуспешной транзакции
-     * @param holding_id
+     * @param transactionId
      */
-    @PutMapping("/accounts/returnholded/{holding_id}")
-    public void returnHolded(@PathVariable int holding_id) {
-        accountService.returnHolded(holding_id);
+    @PutMapping("/accounts/returnholded/{transactionId}")
+    public void returnHolded(@PathVariable String transactionId) {
+        accountService.returnHolded(transactionId);
     }
 
 }

@@ -2,14 +2,14 @@ package ru.innobank.account_service.model;
 
 public class Holding {
     private String accountNumber;
-    private String id;
+    private String transactionId;
     private int holded;
 
     public Holding() {}
 
     public Holding(String accountNumber, String id, int holded) {
         this.accountNumber = accountNumber;
-        this.id = id;
+        this.transactionId = id;
         this.holded = holded;
     }
 
@@ -21,12 +21,12 @@ public class Holding {
         this.accountNumber = accountNumber;
     }
 
-    public String getId() {
-        return id;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public int getHolded() {
@@ -36,4 +36,6 @@ public class Holding {
     public void setHolded(int holded) {
         this.holded = holded;
     }
+
+
 }

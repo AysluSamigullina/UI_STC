@@ -7,7 +7,7 @@ public class Account {
 
     private int id;
     private String accNumber;
-    private int userID;
+    private long userID;
     private int amount;
     private int holded;
     private Date createdAt;
@@ -32,7 +32,7 @@ public class Account {
     public Account() {
     }
 
-    public Account(String accNumber, int userID, int amount, int holded, java.sql.Date openingDate, java.sql.Date closingDate) {
+    public Account(String accNumber, long userID, int amount, int holded, java.sql.Date openingDate, java.sql.Date closingDate) {
         this.accNumber = accNumber;
         this.userID = userID;
         this.amount = amount;
@@ -53,11 +53,11 @@ public class Account {
         this.accNumber = accNumber;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(long userID) {
         this.userID = userID;
     }
 
-    public int getUserID() {
+    public long getUserID() {
         return userID;
     }
 

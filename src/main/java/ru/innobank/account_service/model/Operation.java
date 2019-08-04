@@ -5,34 +5,34 @@ import java.util.Date;
 public class Operation {
     private Date date;
     private String score;
-    private int iserID;
+    private long userID;
     private String description;
     private int sum;
-    private int holding_id;
+    private String transactionID;
 
-    public Operation(Date date, String score, int iserID, String description, int sum) {
+    public Operation(Date date, String score, long userID, String description, int sum) {
         this.date = date;
         this.score = score;
-        this.iserID = iserID;
+        this.userID = userID;
         this.description = description;
         this.sum = sum;
     }
 
-    public int getHolding_id() {
-        return holding_id;
+    public String getTransactionID() {
+        return transactionID;
     }
 
-    public void setHolding_id(int holding_id) {
-        this.holding_id = holding_id;
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
     }
 
-    public Operation(Date date, String score, int iserID, String description, int sum, int holding_id) {
+    public Operation(Date date, String score, long userID, String description, int sum, String transactionID) {
         this.date = date;
         this.score = score;
-        this.iserID = iserID;
+        this.userID = this.userID;
         this.description = description;
         this.sum = sum;
-        this.holding_id = holding_id;
+        this.transactionID = transactionID;
     }
 
     public Date getDate() {
@@ -51,12 +51,12 @@ public class Operation {
         this.score = score;
     }
 
-    public int getIserID() {
-        return iserID;
+    public long getUserID() {
+        return userID;
     }
 
-    public void setIserID(int iserID) {
-        this.iserID = iserID;
+    public void setUserID(long userID) {
+        this.userID = userID;
     }
 
     public String getDescription() {

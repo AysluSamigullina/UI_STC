@@ -1,5 +1,8 @@
 package ru.innobank.account_service.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import ru.innobank.account_service.exception.AccountNotFoundException;
 import ru.innobank.account_service.model.Account;
 import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
@@ -25,15 +28,15 @@ public class AccountService {
      * @param userID
      * @return
      */
-    public List<Account> getUserAccounts(int userID) {
-        return accountRepository.getUserAccounts(userID);
+    public List<Account> getUserAccounts(long userID)  {
+         return accountRepository.getUserAccounts(userID);
     }
 
     /**
      * Создает новый счет для пользователя
      * @param userID
      */
-    public void createAccount(int userID) {
+    public void createAccount(long userID) {
         String score = generateScore();
         accountRepository.addAccount(score, userID);
     }
@@ -124,7 +127,7 @@ public class AccountService {
         withdrawFromMain(holding.getAccountNumber(), holding.getHolded());
         int firsHoldedSum = accountRepository.getHoldedBalance(holding.getAccountNumber());
         int secondHoldedSum = firsHoldedSum + holding.getHolded();
-        accountRepository.refillToHolded(holding.getAccountNumber(), secondHoldedSum, holding.getHolded(), holding.getId());  //записывает в поле holded
+        accountRepository.refillToHolded(holding.getAccountNumber(), secondHoldedSum, holding.getHolded(), holding.getTransactionId());  //записывает в поле holded
 
     }
 
@@ -132,7 +135,7 @@ public class AccountService {
      * Списание заблокированной суммы при успешной оплате
      * @param holding_id
      */
-    public void withdrawHolded(int holding_id) {
+    public void withdrawHolded(String holding_id) {
         accountRepository.withdrawHolded(holding_id);
     }
 
@@ -140,7 +143,7 @@ public class AccountService {
      * Возврат заблокированной суммы при неуспешной транзакции
      * @param holding_id
      */
-    public void returnHolded(int holding_id) {
+    public void returnHolded(String holding_id) {
         accountRepository.returnHolded(holding_id);
     }
 
@@ -153,4 +156,5 @@ public class AccountService {
         String score = "" + 4081781 + System.currentTimeMillis();
         return score;
     }
+
 }
