@@ -1,8 +1,11 @@
 package ru.innobank.account_service.model;
 
+import javax.validation.constraints.Min;
+
 public class Holding {
     private String accountNumber;
     private String transactionId;
+    @Min(value = 0, message = "The value must be positive")
     private int holded;
 
     public Holding() {}

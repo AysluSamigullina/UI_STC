@@ -1,5 +1,7 @@
 package ru.innobank.account_service.model;
 
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import java.util.Date;
 
 
@@ -9,6 +11,7 @@ public class Account {
     private String accNumber;
     private long userID;
     private int amount;
+    @Min(value = 0, message = "The value must be positive")
     private int holded;
     private Date createdAt;
     private Date closedAt;

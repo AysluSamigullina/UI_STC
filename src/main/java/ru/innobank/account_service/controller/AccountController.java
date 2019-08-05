@@ -2,6 +2,7 @@ package ru.innobank.account_service.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import ru.innobank.account_service.exception.AccountNotFoundException;
 import ru.innobank.account_service.model.Account;
 import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
@@ -72,6 +73,7 @@ public class AccountController {
     @GetMapping("/accounts/{accountNumber}/checkBalance")
     public int checkBalance(@PathVariable String accountNumber) {
         return accountService.checkBalance(accountNumber);
+
     }
 
     /**
@@ -82,7 +84,7 @@ public class AccountController {
     @GetMapping("/accounts/{accountNumber}/operations")
     public List<Operation> getOperations(@PathVariable String accountNumber) {
         return accountService.listOfOperations(accountNumber);
-    }
+            }
 
     /**
      * Блокирует сумму на счете

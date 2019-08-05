@@ -3,6 +3,8 @@ package ru.innobank.account_service.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.innobank.account_service.exception.AccountNotFoundException;
+import ru.innobank.account_service.exception.ClosedAccountException;
+import ru.innobank.account_service.exception.LessMoneyException;
 import ru.innobank.account_service.model.Account;
 import ru.innobank.account_service.model.Holding;
 import ru.innobank.account_service.model.Operation;
@@ -118,12 +120,13 @@ public class AccountService {
      */
     public void holdMoney(Holding holding) {
         //проверка
-        if (checkBalance(holding.getAccountNumber()) < holding.getHolded()) {
-            return;
-        }
         if (findAccountByScore(holding.getAccountNumber()).getClosedAt() != null) {
-            return;
+            throw new ClosedAccountException(holding.getAccountNumber());
         }
+        if (checkBalance(holding.getAccountNumber()) < holding.getHolded()) {
+            throw new LessMoneyException(holding.getHolded());
+        }
+
         withdrawFromMain(holding.getAccountNumber(), holding.getHolded());
         int firsHoldedSum = accountRepository.getHoldedBalance(holding.getAccountNumber());
         int secondHoldedSum = firsHoldedSum + holding.getHolded();

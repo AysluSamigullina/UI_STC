@@ -8,10 +8,10 @@
         <version>1.4.3.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>com.inno.bank</groupId>
-    <artifactId>finance-service</artifactId>
+    <groupId>ru.innobank</groupId>
+    <artifactId>account-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>finance-service</name>
+    <name>account-service</name>
 
     <properties>
         <java.version>1.8</java.version>

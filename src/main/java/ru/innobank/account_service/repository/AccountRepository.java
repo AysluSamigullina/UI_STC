@@ -73,9 +73,10 @@ public class AccountRepository {
         log.info("look for account by score");
         String sql = "SELECT * FROM accounts where score_id = " + "'" + score + "'";
         List<Account> list = jdbcTemplate.query(sql, ROW_MAPPER);
-//        if (list.isEmpty()) {
-//            throw new AccountNotFoundException(score);
-//        }
+        if (list.isEmpty()) {
+            throw new AccountNotFoundException(score);
+        }
+
         return list.get(0);
     }
 
